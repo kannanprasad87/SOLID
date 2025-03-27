@@ -17,7 +17,7 @@ class BadUserManager {
     }
     
     func saveUserDetails() {
-        print("Saved details for \(name)")
+        print("Saved \(name)'s details")
     }
     
     func sendWelcomeEmail() {
@@ -30,6 +30,33 @@ let manager = BadUserManager(name: "Steve Jobs", email: "stevejobs@apple.com")
 manager.saveUserDetails()
 manager.sendWelcomeEmail()
 
+///
+/// Good Example
+///
+///  In BetterUserManager, you got
+
+class BetterUserManager {
+    var user: User
+    var communicationManager: CommunicationManagerProtcool
+    var persistanceManager: PersistanceManagerProtocol
+    
+    init(user: User,
+         communicationManager: CommunicationManagerProtcool = CommunicationManager(),
+         persistanceManager: PersistanceManagerProtocol = PersistanceManager()) {
+        self.user = user
+        self.communicationManager = communicationManager
+        self.persistanceManager = persistanceManager
+    }
+    
+    func sendWelcomeEmail() {
+        communicationManager.sendEmail(user: user)
+    }
+    
+    func saveUserDeatils() {
+        persistanceManager.saveCustomer(user: user)
+    }
+}
+
 
 class User {
     var name: String
@@ -41,61 +68,25 @@ class User {
     }
 }
 
-///
-/// Good Example
-///
-///  In BetterUserManager, you got
-
-class BetterUserManager {
-    var user: User
-    var communicationManager: CommunicationManagerProtcool
-    var persistanceManager: PersistanceManagerProtocol
-    
-    init(user: User) {
-        self.user = user
-        self.communicationManager = CommunicationManager(user: user)
-        self.persistanceManager = PersistanceManager(user: user)
-    }
-    
-    func sendWelcomeEmail() {
-        communicationManager.sendEmail()
-    }
-    
-    func saveUserDeatils() {
-        persistanceManager.saveCustomerDetails()
-    }
-}
 
 protocol CommunicationManagerProtcool {
-    func sendEmail()
+    func sendEmail(user: User)
 }
 
+protocol PersistanceManagerProtocol {
+    func saveCustomer(user: User)
+}
 
 class CommunicationManager: CommunicationManagerProtcool {
     
-    var user: User
-    
-    init(user: User) {
-        self.user = user
+    func sendEmail(user: User) {
+        print("Sent email to \(user.email)")
     }
-    func sendEmail() {
-        print("Sent email to \(self.user.email)")
-    }
-}
-
-
-protocol PersistanceManagerProtocol {
-    func saveCustomerDetails()
 }
 
 class PersistanceManager: PersistanceManagerProtocol {
-    var user: User
-    
-    init(user: User){
-        self.user = user
-    }
-    
-    func saveCustomerDetails() {
+
+    func saveCustomer(user: User) {
         print("Saved \(user.name)'s details")
     }
 }
